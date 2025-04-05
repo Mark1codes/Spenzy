@@ -1,3 +1,5 @@
+NEEDED to be Install
+
 npm install,
 npx expo install expo@latest,
 npx expo install expo@^52.0.0m,
