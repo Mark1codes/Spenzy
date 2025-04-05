@@ -1,6 +1,6 @@
-npm install 
-npx expo install expo@latest
-npx expo install expo@^52.0.0
+npm install,
+npx expo install expo@latest,
+npx expo install expo@^52.0.0m,
 npx expo install --fix
 
 
