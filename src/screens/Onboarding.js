@@ -1,7 +1,14 @@
 import * as React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for the back arrow
+import { Ionicons } from '@expo/vector-icons';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const scale = SCREEN_WIDTH / 375;
+
+const normalize = (size) => {
+  return Math.round(scale * size);
+};
 
 const OnboardingScreen = ({ navigation }) => {
   const [screenIndex, setScreenIndex] = React.useState(0);
@@ -57,10 +64,16 @@ const OnboardingScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="#6FCF97" barStyle="light-content" />
       {screenIndex > 0 && (
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={handleBack}
+          >
+            <View style={styles.backButtonContainer}>
+              <Ionicons name="chevron-back" size={normalize(28)} color="#FFFFFF" />
+            </View>
           </TouchableOpacity>
         </View>
       )}
@@ -76,7 +89,7 @@ const OnboardingScreen = ({ navigation }) => {
       <View style={styles.whiteBackground}>
         <View style={styles.imageContainer}>
           <View style={styles.circleBackground} />
-          <Image source={currentScreen.image} style={styles.image} />
+          <Image source={currentScreen.image} style={styles.image} resizeMode="contain" />
         </View>
         <TouchableOpacity
           style={[
@@ -88,6 +101,11 @@ const OnboardingScreen = ({ navigation }) => {
           <Text style={[styles.buttonText, screenIndex === screens.length - 1 && styles.getStartedText]}>
             {screenIndex === screens.length - 1 ? 'Get Started' : 'Next'}
           </Text>
+          {screenIndex === screens.length - 1 ? (
+            <Ionicons name="arrow-forward" size={normalize(24)} color="#FFFFFF" style={styles.buttonIcon} />
+          ) : (
+            <Ionicons name="arrow-forward" size={normalize(24)} color="#6FCF97" style={styles.buttonIcon} />
+          )}
         </TouchableOpacity>
         {screenIndex < screens.length - 1 && (
           <View style={styles.indicatorContainer}>
@@ -114,9 +132,21 @@ const styles = StyleSheet.create({
   },
   header: {
     position: 'absolute',
-    top: 50,
-    left: 20,
+    top: normalize(45),
+    left: normalize(15),
     zIndex: 1,
+  },
+  backButton: {
+    padding: normalize(8),
+  },
+  backButtonContainer: {
+    width: normalize(40),
+    height: normalize(40),
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: normalize(20),
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 20,
   },
   greenBackground: {
     flex: 1,
@@ -147,6 +177,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 20,
+    bottom: 5,
   },
   topAdditionalText: {
     fontSize: 22,
@@ -176,46 +207,41 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#FFFFFF',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 30,
+    paddingVertical: normalize(12),
+    paddingHorizontal: normalize(30),
+    borderRadius: normalize(30),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 30,
+    marginBottom: normalize(30),
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: normalize(4) },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-    width: 150,
+    shadowRadius: normalize(5),
+    elevation: 4,
+    width: normalize(160),
     alignSelf: 'center',
   },
   getStartedButton: {
-    backgroundColor: '#007BFF', // Blue color for "Get Started" button
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-    width: 200,
-    alignSelf: 'center',
+    backgroundColor: '#6FCF97',
+    width: normalize(200),
+    paddingVertical: normalize(15),
+    shadowColor: '#6FCF97',
+    shadowOffset: { width: 0, height: normalize(4) },
+    shadowOpacity: 0.3,
+    shadowRadius: normalize(8),
+    elevation: 6,
   },
   buttonText: {
     color: '#6FCF97',
-    fontSize: 18,
+    fontSize: normalize(18),
     fontFamily: 'Poppins-Bold',
-    marginRight: 10,
+  },
+  buttonIcon: {
+    marginLeft: normalize(8),
   },
   getStartedText: {
-    color: '#FFFFFF', // White text for "Get Started" button
+    color: '#FFFFFF',
   },
   indicatorContainer: {
     flexDirection: 'row',

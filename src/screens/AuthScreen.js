@@ -2,16 +2,18 @@ import * as React from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { auth, db } from '../screens/FirebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 const AuthScreen = ({ navigation }) => {
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState('');    // ANG AUTH SCREEN NAG COMPOSE ug INPUT FIELD 
   const [password, setPassword] = React.useState('');
   const [fullName, setFullName] = React.useState('');
   const [mobileNumber, setMobileNumber] = React.useState('');
-  const [isLogin, setIsLogin] = React.useState(true);
+  const [isLogin, setIsLogin] = React.useState(true);    
   const [showPassword, setShowPassword] = React.useState(false);
+  const [resetEmail, setResetEmail] = React.useState('');
+  const [showResetModal, setShowResetModal] = React.useState(false);
 
   const handleAuth = async () => {
     try {
@@ -41,10 +43,29 @@ const AuthScreen = ({ navigation }) => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      Alert.alert('Error', 'Please enter your email address first');
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert(
+        'Password Reset Email Sent',
+        'Please check your email to reset your password.',
+        [{ text: 'OK', onPress: () => setShowResetModal(false) }]
+      );
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{isLogin ? 'Welcome' : 'Create Account'}</Text>
+        <Text style={styles.title}>{isLogin ? 'Hello, Welcome!' : 'Create Account'}</Text>
       </View>
       <View style={styles.formContainer}>
         {isLogin ? (
@@ -56,6 +77,7 @@ const AuthScreen = ({ navigation }) => {
             showPassword={showPassword}
             setShowPassword={setShowPassword}
             handleAuth={handleAuth}
+            handleForgotPassword={handleForgotPassword}
           />
         ) : (
           <SignUpForm
@@ -77,22 +99,16 @@ const AuthScreen = ({ navigation }) => {
             {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Log In'}
           </Text>
         </TouchableOpacity>
-        {isLogin && (
-          <TouchableOpacity style={styles.googleButton} onPress={() => Alert.alert('Google Sign In', 'Functionality not implemented yet.')}>
-            <Image source={require('../assets/images/google.png')} style={styles.googleIcon} />
-            <Text style={styles.googleButtonText}>Sign In with Google</Text>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );
 };
 
-const LoginForm = ({ email, setEmail, password, setPassword, showPassword, setShowPassword, handleAuth }) => (
+const LoginForm = ({ email, setEmail, password, setPassword, showPassword, setShowPassword, handleAuth, handleForgotPassword }) => (
   <View style={styles.form}>
     <View style={styles.inputContainer}>
       <FontAwesome name="envelope" size={17} color="#CCCCCC" style={styles.inputIcon} />
-      <Text style={styles.label}>Username or Email</Text>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
         placeholder="example@gmail.com"
@@ -118,7 +134,7 @@ const LoginForm = ({ email, setEmail, password, setPassword, showPassword, setSh
     <TouchableOpacity style={styles.loginButton} onPress={handleAuth}>
       <Text style={styles.loginButtonText}>Log In</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.forgotPassword} onPress={() => Alert.alert('Forgot Password', 'Functionality not implemented yet.')}>
+    <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
       <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
     </TouchableOpacity>
   </View>
@@ -150,10 +166,10 @@ const SignUpForm = ({ email, setEmail, password, setPassword, fullName, setFullN
     </View>
     <View style={styles.inputContainer}>
       <FontAwesome name="envelope" size={17} color="#CCCCCC" style={styles.inputIcon} />
-      <Text style={styles.label}>Username or Email</Text>
+      <Text style={styles.label}> Email</Text>
       <TextInput
         style={styles.input}
-        placeholder="Username or Email"
+        placeholder="Email"
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -206,6 +222,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
     color: '#FFFFFF',
     textAlign: 'center',
+    top: 5,
   },
   formContainer: {
     flex: 1.6,
@@ -299,31 +316,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Poppins-Bold',
   },
-  googleButton: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#CCCCCC',
-    padding: 8,
-    borderRadius: 30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingLeft: 20,
-    paddingRight: 20,
-    left: 30,
-    bottom: 200,
-    width: '260',
-  },
-  googleIcon: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
-  },
-  googleButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontFamily: 'Poppins-Regular',
-  },
+  
   forgotPassword: {
     alignItems: 'center',
     marginBottom: 10,
@@ -339,6 +332,7 @@ const styles = StyleSheet.create({
     color: '#007BFF',
     fontFamily: 'Poppins-Regular',
     fontSize: 14,
+    bottom: 100,
   },
   signUpToggleText: {
     marginTop: 15,
