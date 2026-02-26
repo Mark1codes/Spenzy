@@ -7,13 +7,13 @@ import { doc, getDoc, updateDoc, collection, addDoc, getDocs } from 'firebase/fi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const scale = SCREEN_WIDTH / 375; // Use 375 as the base width for scaling
+const scale = SCREEN_WIDTH / 375; 
 
 const normalize = (size) => {
   return Math.round(scale * size);
 };
 
-// Define themes if not already defined in a shared location
+
 export const lightTheme = global.lightTheme || {
   background: '#FFFFFF',
   text: '#000000',
@@ -111,7 +111,7 @@ const Category = ({ navigation }) => {
     });
     setAnimatedIcons(animations);
     
-    // Start staggered entrance animations
+
     const entranceAnimations = categories.map((category, index) => {
       return Animated.sequence([
         Animated.delay(index * 70), // Stagger the entrance
@@ -132,7 +132,7 @@ const Category = ({ navigation }) => {
 
     Animated.parallel(entranceAnimations).start();
 
-    // Start floating animations for all icons
+   
     categories.forEach(category => {
       startFloatingAnimation(animations[category.id].translateY);
     });
@@ -149,7 +149,7 @@ const Category = ({ navigation }) => {
       Animated.sequence([
         Animated.timing(animValue, {
           toValue: -5,
-          duration: 1500 + Math.random() * 1000, // Random duration for variety
+          duration: 1500 + Math.random() * 1000, 
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true
         }),
