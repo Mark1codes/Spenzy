@@ -25,9 +25,9 @@ const OnboardingScreen = ({ navigation }) => {
       image: require('../assets/images/onboard2.png'),
     },
     {
-      title: '', // Keep this empty as it will be displayed separately
+      title: '', 
       subtitle: '',
-      image: require('../assets/images/onboard1.png'), // Add your image here
+      image: require('../assets/images/onboard1.png'), 
     },
   ];
 
