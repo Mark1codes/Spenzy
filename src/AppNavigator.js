@@ -17,12 +17,12 @@ const AppNavigator = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="AuthScreen"     //LOGIN UG SIGN UP
+          name="AuthScreen"     
           component={AuthScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Bottomtabs"  //SUNOD SA LOGIN  MAO NING NAA
+          name="Bottomtabs"  
           component={Bottomtabs}
           options={{ headerShown: false }}
         />
