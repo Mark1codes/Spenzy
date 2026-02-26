@@ -2,14 +2,13 @@ import * as React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, Alert, Modal, Dimensions, StatusBar, Platform, SafeAreaView, Animated, Easing } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { db, auth } from './FirebaseConfig'; // Adjust path if needed
+import { db, auth } from './FirebaseConfig';
 import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const scale = SCREEN_WIDTH / 375; // Use 375 as the base width for scaling
-
+const scale = SCREEN_WIDTH / 375; 
 const normalize = (size) => {
   return Math.round(scale * size);
 };
@@ -62,7 +61,7 @@ const Budget = () => {
     opacity: new Animated.Value(0)
   }).current;
 
-  // Add skeleton animation
+ 
   const shimmerAnimValue = React.useRef(new Animated.Value(0)).current;
   
   React.useEffect(() => {
@@ -79,7 +78,7 @@ const Budget = () => {
     }
   }, [loading]);
 
-  // Generate shimmer gradient
+ 
   const getShimmerGradient = () => {
     const translateX = shimmerAnimValue.interpolate({
       inputRange: [0, 1],
@@ -99,7 +98,7 @@ const Budget = () => {
     };
   };
 
-  // Function to trigger balance card animation
+ 
   const animateBalanceCards = () => {
     Animated.parallel([
       Animated.timing(balanceCardAnim.scale, {
@@ -116,7 +115,7 @@ const Budget = () => {
     ]).start();
   };
 
-  // Function to trigger staggered animation for source icons
+  
   const animateSourceIcons = () => {
     // Stagger the animations for each source icon
     sourceIconsAnimValues.forEach((anim, index) => {
@@ -130,10 +129,10 @@ const Budget = () => {
         })
       ]).start();
 
-      // Start continuous floating animation
+     
       startFloatingAnimation(anim.position, index);
       
-      // Only rotate some of the icons
+    
       if ([0, 2, 4, 6].includes(index)) {
         startRotationAnimation(anim.rotation);
       }
@@ -143,7 +142,7 @@ const Budget = () => {
   };
 
   const startFloatingAnimation = (positionAnim, index) => {
-    const duration = 1500 + (index % 3) * 200; // Vary the duration slightly
+    const duration = 1500 + (index % 3) * 200; 
     
     Animated.loop(
       Animated.sequence([
